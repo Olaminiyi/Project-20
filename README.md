@@ -643,17 +643,21 @@ copy the public ip address of the jenkin server, access it on the web browser wi
 ```
  http://<public ip>:8080
 ```
-- when i accesed the jenkins via port 8080, it was displaying jenkins instance appeared to be offline
-![alt text](images/20.64.png)
-- after trying to resolved it, i found out that Terraform was unable to perfect the installation on the server
-- so after creating the infrastructure using terraform, i re-installed manually all the necessary plugins
+> [!WARNING]
+> when i accesed the jenkins via port 8080, it was displaying jenkins instance appeared to be offline
+> ![alt text](images/20.64.png)
+
+After trying to resolved it, i found out that Terraform was unable to perfect the installation on the server. So after creating the infrastructure using terraform, i re-installed manually all the necessary plugins
+
 ![alt text](images/20.65.png)
+
 ![alt text](images/20.69.png)
 
-- On the github repository, configure the jenkins to use webhook.
+On the github repository, configure the jenkins to use [Webhook](https://www.youtube.com/watch?v=x64mRtXJvRQ).
+
 ![alt text](images/20.70.png)
 
-- Go to manage jenkins > security and check the enable proxy compatibility.
+Go to manage jenkins > security and check the enable proxy compatibility.
 
 
 # The installation of the plugins is essential for facilitating this process. This plugin installation is undertaken in conjunction with the execution of other mandatory configuration adjustments to enable the seamless operation of the intended process.
