@@ -435,27 +435,37 @@ sudo docker build -t app .
 ![alt text](images/20.37.png)
 
 Run the app
-        sudo docker run --network tooling_app_network -p 8090:8000 -idt app
-    ![alt text](images/20.40.png)
+```
+sudo docker run --network tooling_app_network -p 8090:8000 -idt app
+```   
+![alt text](images/20.40.png)
     
-    - I got this error from the web browser
-    ![alt text](images/20.39.png)
-    ![alt text](images/20.38.png)
+> [!NOTICE]
+> I got this error from the web browser
+> ![alt text](images/20.39.png)
+> ![alt text](images/20.38.png)
 
-    - I found out i've stopped the mysql server container
-    - I restarted it 
-        sudo docker start <Container ID>
-    ![alt text](images/20.41.png)
+> I found out i've stopped the mysql server container
+> I restarted it 
+```
+sudo docker start <Container ID>
+```
+![alt text](images/20.41.png)
 
-# PART 2
-- Create an account in Docker Hub
-- Create a new Docker Hub repository
+### Create Repository in Dock Hub 
+
+Docker Hub is a container registry built for developers and open source contributors to find, use, and share their container images. With Hub, developers can host public repos that can be used for free, or private repos for teams and enterprises. Create an account in the [Docker Hub](https://hub.docker.com/signup).  After you've successfully created the account, proceed to create a new Docker Hub repository.
+
 ![alt text](images/20.43.png)
 
- - Push the docker images from your PC to the repository
- ![alt text](images/20.42.png)
+ Push the docker images from your PC to the repository
+
+![alt text](images/20.42.png)
+
 ![alt text](images/20.44.png)
+
 ![alt text](images/20.45.png)
+
 ![alt text](images/20.46.png)
 
 
