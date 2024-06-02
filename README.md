@@ -266,7 +266,7 @@ sudo docker exec -it 33f8d28b9297 bash
 
 ### Update the .env file with connection details to the database
 
-The `.env` file is located in the html t`ooling/html/.env` folder but not visible in terminal. you can use `vi` or `nano`
+The `.env` file is located in the html `tooling/html/.env` folder but not visible in terminal. you can use `vi` or `nano`
 ```
 sudo vi .env
 ```
