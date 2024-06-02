@@ -1,69 +1,32 @@
-# AUTOMATING PHP DOCKER IMAGE DEPLOYMENT TO ECR USING JENKINS AND PROVISION INFRASTRUCTURE WITH TERRAFORM
-
-To deploy many small applications such as web front-end, web-backend, processing jobs, monitoring, logging solutions, etc, some of the applications will require various OS and runtimes of different versions and conflicting dependencies – in such case you would need to spin up serves for each group of applications with the exact OS/runtime/dependencies requirements. When it scales out to tens/hundreds and even thousands of applications, this approach becomes very tedious and challenging to maintain.
-
-Also, when a developer develops an application and sends the application to another developer or DevOps Engineer in the software development team, there is always a problem where the code runs on the developer's computer but doesnt work on the computer of the team member.
-
-**SOLUTION:**
-
-Containerization solves this problem. Unlike a VM, Docker allocates not the whole guest OS for your application, but only isolated minimal part of it – this isolated container has all that the application needs and at the same time is lighter, faster, and can be shipped as a Docker image to multiple physical or virtual environments, as long as this environment can run Docker engine. This approach also solves environment incompatibility issue.
-
-In other words, if an application is shipped as a container it has its own environment that is isolated, and it will always work the same way on any server that has Docker engine.
-
-This Project provides step-by-step process to Automate PHP Docker image deployment to ECR using Jenkins and provision infrastructure with Terraform
-
-![alt text](images/image.png)
-
-### TASK
-
-The process involves creating a Docker image to ensure its optimal functionality and then utilising Jenkins CI/CD in conjunction with Terraform and Packer to leverage infrastructure provisioning and AMI build, respectively.
-
-
-### Setup using Terraform
-
-Create the AMI for the Jenkins server using Packer. Utilise Terraform to deploy the necessary infrastructure components for Amazon Elastic Container Registry (ECR) and a Jenkins server. The Jenkins server will leverage the AMI that was created during the provisioning process.
-
-### Building Docker Images
-
-Building Docker images prior to setting up the deployment pipeline for Amazon Elastic Container Registry (ECR) is considered a commendable approach from a technical standpoint. This practice ensures that containerised applications or services are encapsulated within Docker images before they are transmitted to ECR for storage and distribution. By generating Docker images upfront, the pipeline can efficiently and reliably handle the deployment process, enabling seamless integration and automation of the containerisation and delivery workflow to ECR.
-
-
-### Install Docker and prepare for migration to the Cloud
-
+# Install Docker and prepare for migration to the Cloud
 First, we need to install Docker Engine, which is a client-server application that contains:
 
-- A server with a long-running daemon process dockerd.
-- APIs that specify interfaces that programs can use to talk to and instruct the Docker daemon.
-- A command-line interface (CLI) client docker.
+A server with a long-running daemon process dockerd.
+APIs that specify interfaces that programs can use to talk to and instruct the Docker daemon.
+A command-line interface (CLI) client docker.
 
-> [!NOTE]
-> I started the project with a redhat EC2 but started all over again using ubuntu
-
-### Install using the apt repository
-
+I started the project with a redhat EC2 but started all over again using ubuntu
+# Install using the apt repository
 Before you install Docker Engine for the first time on a new host machine, you need to set up the Docker repository. Afterward, you can install and update Docker from the repository.
+1. Set up Docker's apt repository.
 
-**Set up Docker's apt repository**
-```
 # Add Docker's official GPG key:
 sudo apt-get update
 sudo apt-get install ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
-```
-```
+
 # Add the repository to Apt sources:
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
-```
-```
+
+
 # Install Docker Engine, containerd, and Docker Compose:
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-```
 
 # MySQL in container
 Let us start assembling our application from the Database layer – we will use a pre-built MySQL database container, configure it, and make sure it is ready to receive requests from our PHP application.
@@ -493,8 +456,6 @@ I got this error
 - do another build and verified if it will be successfully builed
 ![alt text](images/20.96.png)
 ![alt text](images/20.97.png)
-
-
 
 
 
