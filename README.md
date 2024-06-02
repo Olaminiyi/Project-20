@@ -299,7 +299,8 @@ Run docker build command
 > [!NOTE]
 > Ensure you edit the `.env` to have the data of your database.
 
-Ensure you are inside the directory "tooling" that has the file Dockerfile and build your container :
+> [!IMPOTANT]
+> Ensure you are inside the directory "tooling" that has the file Dockerfile and build your container :
 ```
 sudo docker build -t tooling:0.0.1 .
 ```
@@ -428,6 +429,9 @@ make the app.sh executable with this command
 chmod +x app.sh
 ```
 build the app
+> [!NOTE]
+> Make sure you are in the directory that has the Dockerfile
+
 ```
 sudo docker build -t app .
 ```
@@ -469,45 +473,147 @@ Docker Hub is a container registry built for developers and open source contribu
 ![alt text](images/20.46.png)
 
 
-# PART 4
+### The next step is to build AMI with Packer
 
-- build the ami with packer 
+[Packer](https://developer.hashicorp.com/packer) is a tool that lets you create identical machine images for multiple platforms from a single source template. Packer can create golden images to use in image pipelines. Packer is owned by Harsicorp, which owns Terraform as well.
+
+We build an image with a Packer template. A Packer template is a configuration file that defines the image you want to build and how to build it. Packer templates use the Hashicorp Configuration Language (HCL). You can read more [here](https://developer.hashicorp.com/packer/tutorials/aws-get-started/aws-get-started-build-image).
+
+
+First, we build the AMI by utilizing the `jenkins-docker.sh` script, to prepare an AMI for the jenkins server.
+
+```
+#!/bin/bash
+
+# The jenkins & docker shell script that will run on instance initialization
+
+
+# Install jenkins and java
+sudo apt-get update
+sudo apt install openjdk-17-jre -y
+
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
+  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt-get update
+sudo apt-get install jenkins -y
+
+
+# Install docker
+sudo apt-get install ca-certificates curl gnupg -y
+
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+echo \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+
+
+# Add ubuntu & Jenkins to the Docker group
+sudo usermod -aG docker ubuntu
+sudo usermod -aG docker jenkins
+
+# run docker test container 
+sudo docker run hello-world
+
+# install aws cli
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" 
+sudo apt install unzip
+sudo unzip awscliv2.zip  
+sudo ./aws/install
+aws --version
+
+# start & enable jenkins
+sudo systemctl start jenkins
+sudo systemctl enable jenkins
+```
+
+The above script:
+
+- installs java and jenkins
+- Installs Docker
+- Installs aws cli
+- Adds jenkins and Ubuntu to the docker group
+> [!NOTICE]
+> Always refer to the documentation of the [jenkins](https://www.jenkins.io/doc/book/installing/linux/) and [Docker](https://docs.docker.com/engine/install/ubuntu/).
+
+Run the command
+
+Go to the AMI directory
+```
+cd AMI
+```
+```
+Packer build jenkins-docker.pkr.hcl
+```
+
 ![alt text](images/20.47.png)
 
-- check to verify it on the AWS console
+**Check to verify it on the AWS console.**
+
 ![alt text](images/20.48.png)
 
-- copy the ami and update it in the terraform.auto.tfvars
+**copy the ami and update it in the terraform.auto.tfvars**
+
 ![alt text](images/20.49.png)
+
 ![alt text](images/20.50.png)
 
-- create a workspace on the terraform cloud 
-    - connect it to vcs and select the project
-    ![alt text](images/20.52.png)
+### Create a workspace on the terraform cloud
 
-- update the enviromental variables
-    AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
+Terraform Cloud is a platform developed by Hashicorp that helps with managing your Terraform code. It is used to enhance collaboration between developers and DevOps engineers, simplify your workflow and improve security overall around the product. You can create an account [here](https://app.terraform.io/public/signup/account)
+
+Connect it to vcs and select the project that contains the terraform code
+
+![alt text](images/20.52.png)
+
+Update the enviromental variables
+AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
+
 ![alt text](images/20.53.png)
 
-- do terraform init for the terraform and push the commit to repo
-![alt text](images/20.55.png)
-    - i got this error complaining about large files when i wanted to push
-![alt text](images/20.54.png)
-    - I resolved it by creating a gitignore file and included the name of the large files in the gitignore file
+cd to your terraform directory and run terrafor init for it to download the required plugin
+```
+terraform init
+```
 
-- After pushing to the repo, creat a run from the UI in the terraform cloud
+![alt text](images/20.55.png)
+
+Push your code to your git repo to feed the terraform cloud 
+> [!WARNING]
+> I got this error complaining about large files when i wanted to push
+> ![alt text](images/20.54.png)
+
+I resolved it by creating a gitignore file and included the name of the large files in the gitignore file
+
+After pushing to the repo, creat a run from the UI in the terraform cloud
+
 ![alt text](images/20.56.png)
+
 ![alt text](images/20.57.png)
 
-- check if the resources were created successfully
+Check if the resources were created successfully
+
 ![alt text](images/20.58.png)
+
 ![alt text](images/20.59.png)
+
 ![alt text](images/20.60.png)
+
 ![alt text](images/20.61.png)
+
 ![alt text](images/20.62.png)
+
 ![alt text](images/20.63.png)
 
-# Now we can ssh into the jenkins-server and setup the configuration of an automated process for Docker image building. This setup involves triggering jenkins to initiate a build procedure upon detecting a push event within the GitHub repository, accomplished through the utilization of a webhook mechanism.
+Now we can ssh into the jenkins-server and setup the configuration of an automated process for Docker image building. This setup involves triggering jenkins to initiate a build procedure upon detecting a push event within the GitHub repository, accomplished through the utilization of a webhook mechanism.
 
 - connect to the Jenkins server via ssh
 - start jenkins
