@@ -647,7 +647,7 @@ copy the public ip address of the jenkin server, access it on the web browser wi
 > when i accesed the jenkins via port 8080, it was displaying jenkins instance appeared to be offline
 > ![alt text](images/20.64.png)
 
-After trying to resolved it, i found out that Terraform was unable to perfect the installation on the server. So after creating the infrastructure using terraform, i re-installed manually all the necessary plugins
+After trying to resolved it, i found out that Terraform was unable to perfect the installation on the server. So after creating the infrastructure using terraform, I connected to the Jenkins instance via ssh and I manually re-installed all the necessary plugins
 
 ![alt text](images/20.65.png)
 
