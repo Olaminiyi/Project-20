@@ -129,107 +129,153 @@ sudo docker network create --subnet=172.18.0.0/24 tooling_app_network
 ```   
 ![alt text](images/20.6.png)
 
-Creating a custom network is not necessary because even if we do not create a network, Docker will use the default network for all the containers you run. By default, the network we created above is of DRIVER Bridge. So, also, it is the default network. You can verify this by running the 
-    sudo docker network ls 
+Creating a custom network is not necessary because even if we do not create a network, Docker will use the default network for all the containers you run. By default, the network we created above is of DRIVER Bridge. So, also, it is the default network. You can verify this by running the command below:
+```
+sudo docker network ls 
+```
 ![alt text](images/20.7.png)
 
-- But there are use cases where this is necessary. For example, if there is a requirement to control the cidr range of the containers running the entire application stack. This will be an ideal situation to create a network and specify the --subnet
+But there are use cases where this is necessary. For example, if there is a requirement to control the `cidr range` of the containers running the entire application stack. This will be an ideal situation to create a `network` and specify the `--subnet`
 
-- For clarity’s sake, we will create a network with a subnet dedicated for our project and use it for both MySQL and the application so that they can connect.
+For clarity’s sake, we will create a network with a subnet dedicated for our project and use it for both MySQL and the application so that they can connect.
 
-- Run the MySQL Server container using the created network.
+Run the MySQL Server container using the created network.
 
 First, let us create an environment variable to store the root password:
-       export MYSQL_PW=12345678
+```      
+export MYSQL_PW=12345678
+```
 verify the environment variable is created
-        echo $MYSQL_PW
+```   
+echo $MYSQL_PW
+```
+
 ![alt text](images/20.8.png)
 
-- Then, pull the image and run the container, all in one command like below:
-    sudo docker run --network tooling_app_network -h mysqlserverhost --name=ola-mysql-server -e MYSQL_ROOT_PASSWORD=12345678  -d mysql/mysql-server:latest 
+Then, pull the image and run the container, all in one command like below:
+```
+sudo docker run --network tooling_app_network -h mysqlserverhost --name=ola-mysql-server -e MYSQL_ROOT_PASSWORD=12345678  -d mysql/mysql-server:latest 
+```
+
 ![alt text](images/20.9.png)
 
-- If the image is not found locally, it will be downloaded from the docker registry.
-   Verify the container is running:
-        sudo docker ps
+If the image is not found locally, it will be downloaded from the docker registry. Verify the container is running:
+```
+sudo docker ps
+```
 ![alt text](images/20.10.png)
-![alt text](images/20.11.png)
-# As you already know, it is best practice not to connect to the MySQL server remotely using the root user. Therefore, we will create an SQL script that will create a user we can use to connect remotely.
 
-- Create a file and name it create_user.sql and add the below code in the file:
-    CREATE USER 'ola'@'%' IDENTIFIED WITH mysql_native_password BY 'ola';
-    GRANT ALL PRIVILEGES ON * . * TO 'ola'@'%';
-    FLUSH PRIVILEGES;
+![alt text](images/20.11.png)
+
+> [!IMPORTANT]
+> As you already know, it is best practice not to connect to the MySQL server remotely using the root user.Therefore, we will create an SQL script that will create a user we can use to connect remotely.
+
+Create a file and name it create_user.sql and add the below code in the file:
+```
+CREATE USER 'ola'@'%' IDENTIFIED WITH mysql_native_password BY 'ola';
+```
+```
+GRANT ALL PRIVILEGES ON * . * TO 'ola'@'%';
+```
+```
+FLUSH PRIVILEGES;
+```
 ![alt text](images/20.12.png)
+
 ![alt text](images/20.14.png)
 
-- Run the script: Ensure you are in the directory create_user.sql file is located or declare a path
-        sudo docker exec -i ola-mysql-server mysql -uroot -p12345678 < create_user.sql 
-    ![alt text](images/20.13.png)
+Run the script: Ensure you are in the directory create_user.sql file is located or declare a path
+```
+sudo docker exec -i ola-mysql-server mysql -uroot -p12345678 < create_user.sql 
+```
 
-# NOTE :  mysql: [Warning] Using a password on the command line interface can be insecure.
+![alt text](images/20.13.png)
+
+> NOTE :  mysql: [Warning] Using a password on the command line interface can be insecure.
 - don't worry about the error above
 
-# Connecting to the MySQL server from a second container running the MySQL client utility
+### Connecting to the MySQL server from a second container running the MySQL client utility
+
 The good thing about this approach is that you do not have to install any client tool on your laptop, and you do not need to connect directly to the container running the MySQL server.
-- Run the MySQL Client Container:
-       sudo docker run --network tooling_app_network --name mysql-client -it --rm mysql mysql -h mysqlserverhost -uola -p 
+
+Run the MySQL Client Container:
+```
+sudo docker run --network tooling_app_network --name mysql-client -it --rm mysql mysql -h mysqlserverhost -uola -p
+``` 
+
 ![alt text](images/20.17.png)
 
-  -  Flags used:
+**Flags used:**
+- --name gives the container a name
+- -it runs in interactive mode and Allocate a pseudo-TTY
+- --rm automatically removes the container when it exits
+- --network connects a container to a network
+- -h a MySQL flag specifying the MySQL server Container hostname
+- -u user created from the SQL script. ola is the username for user created from the SQL script "create_user.sql"
+- -p password specified for the user created from the SQL script
 
---name gives the container a name
--it runs in interactive mode and Allocate a pseudo-TTY
---rm automatically removes the container when it exits
---network connects a container to a network
--h a MySQL flag specifying the MySQL server Container hostname
--u user created from the SQL script
-onyeka username for user created from the SQL script "create_user.sql"
--p password specified for the user created from the SQL script
+### Prepare database schema
 
-# Prepare database schema
 Now you need to prepare a database schema so that the Tooling application can connect to it.
-1. Clone the Tooling-app repository from here
-    install git on the server
-    //sudo yum install git -y
-    sudo apt update
-    sudo apt install git
-    git clone https://github.com/Olaminiyi/project20-tooling.git
+
+Clone the Tooling-app repository from here
+```
+#install git on the server
+sudo apt update
+sudo apt install git
+git clone https://github.com/Olaminiyi/project20-tooling.git
+```
 
 ![alt text](images/20.19.png)
 
-2. On your terminal, export the location of the SQL file
-    cd project20-tooling/html
-    export tooling_db_schema=tooling_db_schema.sql 
-You can find the tooling_db_schema.sql in the tooling/html/tooling_db_schema.sql folder of cloned repo.
+On your terminal, export the location of the SQL file
+```
+cd project20-tooling/html
+```
+```   
+export tooling_db_schema=tooling_db_schema.sql 
+```
+
+You can find the tooling_db_schema.sql in the `tooling/html/tooling_db_schema.sql` folder of cloned repo.
 Verify that the path is exported
-        echo $tooling_db_schema
+```
+echo $tooling_db_schema
+```
+
 ![alt text](images/20.20.png)
 
-- Use the SQL script to create the database and prepare the schema. With the docker exec command, you can execute a command in a running container. Run the below command from the tooling_db_schema.sql directory.
-        sudo docker exec -i ola-mysql-server mysql -uroot -p12345678 < tooling_db_schema.sql
+Use the SQL script to create the database and prepare the schema. With the docker exec command, you can execute a command in a running container. Run the below command from the tooling_db_schema.sql directory.
+```
+sudo docker exec -i ola-mysql-server mysql -uroot -p12345678 < tooling_db_schema.sql
+```
+> [!NOTE]
+> "I got an error- 33f8d28b9297 has stop running" because the container was stopped
+> resolved it by running
+```
+sudo docker start 33f8d28b9297
+```
+```
+sudo docker exec -it 33f8d28b9297 bash
+```
 
-- "I got an error- 33f8d28b9297 has stop running"
-- resolved it by running
-            sudo docker start 33f8d28b9297
-            sudo docker exec -it 33f8d28b9297
-- got another error- "docker: "exec" requires a minimum of 2 arguments"
-I resolved by running 
-            sudo docker -it 33f8d28b9297 bash
- ![alt text](images/20.21.png)   
+![alt text](images/20.21.png)   
 
-# write the dockerfile
+**write the dockerfile**
+
 ![alt text](images/20.25.png)
 
-# Update the .env file with connection details to the database
-The .env file is located in the html tooling/html/.env folder but not visible in terminal. you can use vi or nano
+### Update the .env file with connection details to the database
 
+The `.env` file is located in the html t`ooling/html/.env` folder but not visible in terminal. you can use `vi` or `nano`
+```
 sudo vi .env
-
+```
+```
 MYSQL_IP=mysqlserverhost
 MYSQL_USER=ola
 MYSQL_PASS=ola
 MYSQL_DBNAME=toolingdb
+```
 
 ![alt text](images/20.22.png)
 
