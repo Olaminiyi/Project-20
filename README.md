@@ -1,12 +1,12 @@
 # AUTOMATING PHP DOCKER IMAGE DEPLOYMENT TO ECR USING JENKINS AND PROVISION INFRASTRUCTURE WITH TERRAFORM
 
-To deploy many small applications such as web front-end, web-backend, processing jobs, monitoring, logging solutions, etc, some of the applications will require various OS and runtimes of different versions and conflicting dependencies – in such case you would need to spin up serves for each group of applications with the exact OS/runtime/dependencies requirements. When it scales out to tens/hundreds and even thousands of applications, this approach becomes very tedious and challenging to maintain.
+To deploy many small applications such as web **front-end, web-backend, processing jobs, monitoring, logging solutions**, etc, some of the applications will require various OS and runtimes of different versions and conflicting dependencies – in such case you would need to spin up serves for each group of applications with the exact `OS/runtime/dependencies `requirements. When it scales out to tens/hundreds and even thousands of applications, this approach becomes very tedious and challenging to maintain.
 
 Also, when a developer develops an application and sends the application to another developer or DevOps Engineer in the software development team, there is always a problem where the code runs on the developer's computer but doesnt work on the computer of the team member.
 
 **SOLUTION:**
 
-Containerization solves this problem. Unlike a VM, Docker allocates not the whole guest OS for your application, but only isolated minimal part of it – this isolated container has all that the application needs and at the same time is lighter, faster, and can be shipped as a Docker image to multiple physical or virtual environments, as long as this environment can run Docker engine. This approach also solves environment incompatibility issue.
+**Containerization** solves this problem. Unlike a `VM`, `Docker` allocates not the whole guest `OS` for your application, but only isolated minimal part of it – this isolated container has all that the application needs and at the same time is lighter, faster, and can be shipped as a Docker image to multiple physical or virtual environments, as long as this environment can run `Docker engine`. This approach also solves environment incompatibility issue.
 
 In other words, if an application is shipped as a container it has its own environment that is isolated, and it will always work the same way on any server that has Docker engine.
 
@@ -65,14 +65,20 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
-# MySQL in container
-Let us start assembling our application from the Database layer – we will use a pre-built MySQL database container, configure it, and make sure it is ready to receive requests from our PHP application.
+### MySQL in container
 
-- Step 1: Pull MySQL Docker Image from Docker Hub Registry
+Let us start assembling our application from the `Database layer` – we will use a pre-built MySQL database container, configure it, and make sure it is ready to receive requests from our PHP application.
+
+**Step 1: Pull MySQL Docker Image from Docker Hub Registry**
+
 Start by pulling the appropriate Docker image for MySQL. You can download a specific version or opt for the latest release, as seen in the following command:
-     sudo docker pull mysql/mysql-server:latest
-     ![alt text](images/20.1.png)
-     ![alt text](images/20.2.png)
+```
+sudo docker pull mysql/mysql-server:latest
+```
+
+![alt text](images/20.1.png)
+
+![alt text](images/20.2.png)
 
 - Step 2: Deploy the MySQL Container to your Docker Engine
     - Once you have the image, move on to deploying a new MySQL container with:
