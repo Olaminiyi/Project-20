@@ -660,69 +660,103 @@ On the github repository, configure the jenkins to use [Webhook](https://www.you
 Go to manage jenkins > security and check the enable proxy compatibility.
 
 
-# The installation of the plugins is essential for facilitating this process. This plugin installation is undertaken in conjunction with the execution of other mandatory configuration adjustments to enable the seamless operation of the intended process.
+The installation of the plugins is essential for facilitating this process. This plugin installation is undertaken in conjunction with the execution of other mandatory configuration adjustments to enable the seamless operation of the intended process.
 
-# Go to manage jenkins > plugins and install the following plugins:
+Go to manage jenkins > plugins and install the following plugins:
 
-Docker Pipeline Plugin: This plugin allows you to define your Jenkins pipeline using Docker commands. It integrates Docker functionality directly into your Jenkins pipeline script.
+**Docker Pipeline Plugin:** This plugin allows you to define your Jenkins pipeline using Docker commands. It integrates Docker functionality directly into your Jenkins pipeline script.
+
 ![alt text](images/20.72.png)
 
-Amazon ECR Plugin: This plugin provides integration with Amazon ECR. It allows you to easily push and pull Docker images to and from ECR repositories.
+**Amazon ECR Plugin:** This plugin provides integration with Amazon ECR. It allows you to easily push and pull Docker images to and from ECR repositories.
+
 ![alt text](images/20.71.png)
 
-Blue Ocean: Blue Ocean aims to simplify the way you create, visualize, and manage your Jenkins pipelines. It offers a more user-friendly and visual approach to building and monitoring pipeline workflows.
+**Blue Ocean:** Blue Ocean aims to simplify the way you create, visualize, and manage your Jenkins pipelines. It offers a more user-friendly and visual approach to building and monitoring pipeline workflows.
+
 ![alt text](images/20.73.png)
 
-# Then open blue ocean and configure jenkins server to use the repository in the github.
+Then open blue ocean and configure jenkins server to use the repository in the github.
+
 ![alt text](images/20.74.png)
 
-- connect it to a git repo
+Connect it to a git repo
+
 ![alt text](images/20.75.png)
-- generate an access token
+
+Generate an access token
+
 ![alt text](images/20.76.png)
+
 ![alt text](images/20.77.png)
 
-- select a repo
+select a repo
+
 ![alt text](images/20.78.png)
+
 ![alt text](images/20.79.png)
 
-- update the README file and push to repo to trigger build
-# I got this Error
-"Started by user admin Connecting to https://api.github.com with no credentials, anonymous access Jenkins-Imposed API Limiter: Current quota for Github API usage has 38 remaining (1 over budget). Next quota of 60 in 37 min."
-![alt text](images/20.80.png)
+Update the README file and push to repo to trigger build
 
-- I ressolved through this step:
-    Manage jenkins > system 
-    - under Github API Usage:
-    I change it from Normalize API request to "Throttle at/near rate limit"
+> [!WARNING]
+> I got this Error
+>"Started by user admin Connecting to https://api.github.com with no credentials, anonymous access Jenkins-Imposed API Limiter: Current quota for Github API usage has 38 remaining (1 over budget). Next quota of 60 in 37 min."
+>![alt text](images/20.80.png)
+
+**I ressolved through this step:**
+```
+Manage jenkins > system 
+- under Github API Usage:
+I change it from Normalize API request to "Throttle at/near rate limit"
+```
+
 ![alt text](images/20.95.png)
 
-- update the README file and push again
-I got this error 
-![alt text](images/20.81.png)
-# i resolved it through aws configure, i set my aws secrete key and password again
+Update the README file and push again
+> [!WARNING]
+>I got this error 
+> ![alt text](images/20.81.png)
 
-- After building again, i got some permission error pushing to the ECR 
-![alt text](images/20.82.png)
-# i resolved it by giving the "aws_iam_policy" the necessary permission
+ I resolved it through [aws configure](https://www.youtube.com/watch?v=bT19B3IBWHE), I set my aws secrete key and password again
 
-- after rebuilding again, the pipeline was build successful
+> [!WARNING]
+> After building again, i got some permission error pushing to the ECR 
+>![alt text](images/20.82.png)
+
+**I resolved it by giving the "aws_iam_policy" the necessary permission**
+
+After rebuilding again, the pipeline was build successful
+
 ![alt text](images/20.83.png)
+
 ![alt text](images/20.84.png)
+
 ![alt text](images/20.85.png)
+
 ![alt text](images/20.86.png)
+
 ![alt text](images/20.87.png)
+
 ![alt text](images/20.88.png)
+
 ![alt text](images/20.89.png)
+
 ![alt text](images/20.90.png)
+
 ![alt text](images/20.91.png)
 
-- check the ECR if the build was successfully pushed
+Check the ECR if the build was successfully pushed
+
 ![alt text](images/20.92.png)
+
 ![alt text](images/20.93.png)
+
 ![alt text](images/20.94.png)
-- do another build and verified if it will be successfully builed
+
+Do another build and verified if it will be successfully builed
+
 ![alt text](images/20.96.png)
+
 ![alt text](images/20.97.png)
 
 
