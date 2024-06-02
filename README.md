@@ -279,15 +279,16 @@ MYSQL_DBNAME=toolingdb
 
 ![alt text](images/20.22.png)
 
-# Flags used:
+**Flags used:**
 
-MYSQL_IP mysql ip address "leave as mysqlserverhost"
-MYSQL_USER mysql username for user export as environment variable
-MYSQL_PASS mysql password for the user exported as environment varaible
-MYSQL_DBNAME mysql databse name "toolingdb"
+- MYSQL_IP mysql ip address "leave as mysqlserverhost"
+- MYSQL_USER mysql username for user export as environment variable
+- MYSQL_PASS mysql password for the user exported as environment varaible
+- MYSQL_DBNAME mysql databse name "toolingdb"
 
-# Run the Tooling App
-Containerization of an application starts with creation of a file with a special name - 'Dockerfile' (without any extensions). This can be considered as a 'recipe' or 'instruction' that tells Docker how to pack your application into a container. In this project, you will build your container from a pre-created Dockerfile, but as a DevOps, you must also be able to write Dockerfiles.
+### Run the Tooling App
+
+**Containerization** of an application starts with creation of a file with a special name - `Dockerfile` (without any extensions). This can be considered as a 'recipe' or 'instruction' that tells Docker how to pack your application into a container. In this project, you will build your container from a pre-created Dockerfile, but as a DevOps, you must also be able to write Dockerfiles.
 
 So, let us containerize our Tooling application; here is the plan:
 
@@ -295,65 +296,87 @@ Make sure you have checked out your Tooling repo to your machine with Docker eng
 First, we need to build the Docker image the tooling app will use. The Tooling repo you cloned above has a Dockerfile for this purpose. Explore it and make sure you understand the code inside it.
 Run docker build command
 
-# Note: Ensure you edit the .env to have the data of your database.
+> [!NOTE]
+> Ensure you edit the `.env` to have the data of your database.
 
 Ensure you are inside the directory "tooling" that has the file Dockerfile and build your container :
+```
+sudo docker build -t tooling:0.0.1 .
+```
 
-        sudo docker build -t tooling:0.0.1 .
+In the above command, we specify a parameter `-t`, so that the image can be tagged `tooling:0.0.1` - Also, you have to notice the `.` at the end. This is important as that tells Docker to locate the Dockerfile in the current directory you are running the command. Otherwise, you would need to specify the absolute path to the Dockerfile.
+```
+sudo docker build -t tooling:0.0.1 .
+```
 
-
-In the above command, we specify a parameter -t, so that the image can be tagged tooling"0.0.1 - Also, you have to notice the . at the end. This is important as that tells Docker to locate the Dockerfile in the current directory you are running the command. Otherwise, you would need to specify the absolute path to the Dockerfile.
-        sudo docker build -t tooling:0.0.1 .
 ![alt text](images/20.23.png)
 
-# To get more information on the toolingdb container run the command
-- run this command
-$ docker inspect ola-mysql-server 
+To get more information on the toolingdb container run the command
+
+run this command
+```
+docker inspect ola-mysql-server 
+```
 ![alt text](images/20.26.png)
+
 ![alt text](images/20.27.png)
 
-- Run the container:
-NOTE: Open port 9080 on the security group of the ubuntu server
+**Run the container:**
+> [!NOTE]
+> Open port 9080 on the security group of the ubuntu server
+
 ![alt text](images/20.28.png)
 
-    sudo docker run --network tooling_app_network -p 9080:80 -it tooling:0.0.1
-    ![alt text](images/20.29.png)
+```
+sudo docker run --network tooling_app_network -p 9080:80 -it tooling:0.0.1
+```
 
-- I was getting an error, I could not view the website on the browser
-![alt text](images/20.24.png)
-![alt text](images/20.51.png)
+![alt text](images/20.29.png)
 
-- i resolved it by hard coded the database connection details in the db_conn.php under the html folder
-![alt text](images/20.30.png)
+> [!WARNING]
+> I was getting an error, I could not view the website on the browser
+> ![alt text](images/20.24.png)
+>![alt text](images/20.51.png)
+
+> [!NOTE]
+> I resolved it by hard coded the database connection details in the db_conn.php under the html folder
+> ![alt text](images/20.30.png)
+
 ![alt text](images/20.31.png)
 ![alt text](images/20.32.png)
 
+```
 sudo docker ps
 sudo docker stop <container-id> 
+```
 ![alt text](images/20.33.png)
 
 
-# PRACTICE TASK
-Practice Task №1 – Implement a POC (Prove Of Concept) to migrate the PHP-Todo app into a containerized application. Download php-todo repository from here https://github.com/Tonybesto/php-todo.git
+
+To implement migration of  PHP-Todo app into a containerized application. Download php-todo repository from here https://github.com/Tonybesto/php-todo.git
+
 ![alt text](images/20.34.png)
 
-Part 1
-Goto the php-todo directory
+
+**Firstly**, go to the php-todo directory
+```
 cd php-todo
-
+```
 Update the .env file with the database credentials
-
+```
 DB_HOST=mysqlserverhost
 DB_DATABASE=toolingdb
 DB_USERNAME=ola
 DB_PASSWORD=ola
 DB_CONNECTION=mysql
 DB_PORT=3306
+```
 
 ![alt text](images/20.35.png)
 
-2. Write a Dockerfile for the TODO app
-#----------------------------------------------------------------
+
+The next step is to write a **Dockerfile for the TODO app.** create a file named Dockerfile with the code below
+```
 FROM php:7.4-cli
 
 USER root
@@ -394,17 +417,24 @@ RUN composer install
 EXPOSE 8000
 
 ENTRYPOINT [ "bash", "start-apache.sh" ]
+```
 
-#----------------------------------------------------------------------
 ![alt text](images/20.36.png)
 
-3. Run both database and app on your laptop Docker Engine
-    - make the app.sh executable with this command
-        chmod +x app.sh
-    - build the app
-        sudo docker build -t app .
-    ![alt text](images/20.37.png)
-    - run the app
+Run both database and app on your laptop Docker Engine
+
+make the app.sh executable with this command
+```
+chmod +x app.sh
+```
+build the app
+```
+sudo docker build -t app .
+```
+
+![alt text](images/20.37.png)
+
+Run the app
         sudo docker run --network tooling_app_network -p 8090:8000 -idt app
     ![alt text](images/20.40.png)
     
