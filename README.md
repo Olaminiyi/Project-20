@@ -354,14 +354,14 @@ sudo docker stop <container-id>
 
 
 
-To implement migration of  PHP-Todo app into a containerized application. Download php-todo repository from here https://github.com/Tonybesto/php-todo.git
+To implement migration of  PHP tooling app into a containerized application. Download tooling repository from here https://github.com/Tonybesto/php-todo.git
 
 ![alt text](images/20.34.png)
 
 
-**Firstly**, go to the php-todo directory
+**Firstly**, go to the tooling directory
 ```
-cd php-todo
+cd tooling app
 ```
 Update the .env file with the database credentials
 ```
@@ -376,7 +376,7 @@ DB_PORT=3306
 ![alt text](images/20.35.png)
 
 
-The next step is to write a **Dockerfile for the TODO app.** create a file named Dockerfile with the code below
+The next step is to write a **Dockerfile for the tooling app.** create a file named Dockerfile with the code below within the tooling app directory.
 ```
 FROM php:7.4-cli
 
@@ -556,7 +556,7 @@ Packer build jenkins-docker.pkr.hcl
 
 ![alt text](images/20.47.png)
 
-**Check to verify it on the AWS console.**
+**Check to verify the AMI on the AWS console.**
 
 ![alt text](images/20.48.png)
 
@@ -574,12 +574,15 @@ Connect it to vcs and select the project that contains the terraform code
 
 ![alt text](images/20.52.png)
 
-Update the enviromental variables
-AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
+Update the enviromental variables **AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY**
 
 ![alt text](images/20.53.png)
 
 cd to your terraform directory and run terrafor init for it to download the required plugin
+```
+cd Terraform
+```
+
 ```
 terraform init
 ```
@@ -587,6 +590,7 @@ terraform init
 ![alt text](images/20.55.png)
 
 Push your code to your git repo to feed the terraform cloud 
+
 > [!WARNING]
 > I got this error complaining about large files when i wanted to push
 > ![alt text](images/20.54.png)
