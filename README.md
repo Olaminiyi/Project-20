@@ -14,6 +14,10 @@ This Project provides step-by-step process to Automate PHP Docker image deployme
 
 ![alt text](images/image.png)
 
+> [!IMPORTANT]
+> This the link to clone the [Terraform folder](https://github.com/Olaminiyi/Terraform-Configuration-For-Projects) for this project. clone it to your project directory.
+> You will find a link to clone the toolinp app as we proceed in this project.
+
 ### TASK
 
 The process involves creating a Docker image to ensure its optimal functionality and then utilising Jenkins CI/CD in conjunction with Terraform and Packer to leverage infrastructure provisioning and AMI build, respectively.
