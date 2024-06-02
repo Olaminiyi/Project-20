@@ -80,37 +80,54 @@ sudo docker pull mysql/mysql-server:latest
 
 ![alt text](images/20.2.png)
 
-- Step 2: Deploy the MySQL Container to your Docker Engine
-    - Once you have the image, move on to deploying a new MySQL container with:
-    docker run --name <container_name> -e MYSQL_ROOT_PASSWORD=<my-secret-pw> -d mysql/mysql-server:latest
+**Step 2: Deploy the MySQL Container to your Docker Engine**
+
+Once you have the image, move on to deploying a new MySQL container with:
+```
+docker run --name <container_name> -e MYSQL_ROOT_PASSWORD=<my-secret-pw> -d mysql/mysql-server:latest
+```   
             OR
-    sudo docker run --name ola-mysql-server -e MYSQL_ROOT_PASSWORD=12345678 -d mysql/mysql-server:latest
-   -  Then, check to see if the MySQL container is running: Assuming the container name specified is ola-mysql-server
-        sudo docker ps -a
-    ![alt text](images/20.3.png)
+```
+sudo docker run --name ola-mysql-server -e MYSQL_ROOT_PASSWORD=12345678 -d mysql/mysql-server:latest
+```   
+Then, check to see if the MySQL container is running: Assuming the container name specified is ola-mysql-server
+```
+sudo docker ps -a
+```
 
-- Step 3: Connecting to the MySQL Docker Container
-We can either connect directly to the container running the MySQL server or use a second container as a MySQL client. Let us see what the first option looks like.
+![alt text](images/20.3.png)
 
-- Approach 1
-- Connecting directly to the container running the MySQL server:
-    sudo docker exec -it ola-mysql-server mysql -uroot -p
+***Step 3: Connecting to the MySQL Docker Container**
+
+We can either connect directly to the container running the `MySQL server` or use a second container as a `MySQL client`. Let us see what the first option looks like.
+
+**Approach 1:** Connecting directly to the container running the MySQL server:
+```
+sudo docker exec -it ola-mysql-server mysql -uroot -p
+```
+
 ![alt text](images/20.4.png)
 
-- Approach 2
-- At this stage you are now able to create a docker container but we will need to add a network. So, stop and remove the previous mysql docker container.
-    sudo docker ps -a
-    sudo docker stop ola-mysql-server 
-    sudo docker rm ola-mysql-server or <container ID> 
+**Approach 2:** At this stage you are now able to create a docker container but we will need to add a network. So, stop and remove the previous mysql docker container.
+```
+sudo docker ps -a
+sudo docker stop ola-mysql-server 
+sudo docker rm ola-mysql-server or <container ID> 
+```
 
-- check if the mysql has been removed 
-    sudo docker ps -a 
+check if the mysql has been removed 
+```
+sudo docker ps -a 
+```
+
 ![alt text](images/20.5.png)
 
 
-- First, create a network:
-    sudo docker network create --subnet=172.18.0.0/24 tooling_app_network 
-    ![alt text](images/20.6.png)
+**First, create a network:**
+```
+sudo docker network create --subnet=172.18.0.0/24 tooling_app_network 
+```   
+![alt text](images/20.6.png)
 
 Creating a custom network is not necessary because even if we do not create a network, Docker will use the default network for all the containers you run. By default, the network we created above is of DRIVER Bridge. So, also, it is the default network. You can verify this by running the 
     sudo docker network ls 
