@@ -613,24 +613,36 @@ Check if the resources were created successfully
 
 ![alt text](images/20.63.png)
 
-Now we can ssh into the jenkins-server and setup the configuration of an automated process for Docker image building. This setup involves triggering jenkins to initiate a build procedure upon detecting a push event within the GitHub repository, accomplished through the utilization of a webhook mechanism.
+Now we can ssh into the `jenkins-server` and setup the configuration of an automated process for Docker image building. This setup involves triggering `jenkins` to initiate a build procedure upon detecting a push event within the GitHub repository, accomplished through the utilization of a `webhook mechanism`.
 
-- connect to the Jenkins server via ssh
+Connect to the Jenkins server via ssh
 - start jenkins
-    sudo systemctl start jenkins
+```
+sudo systemctl start jenkins
+```
 - enable jenkins
-    sudo systemctl enable jenkins
+```  
+sudo systemctl enable jenkins
+```
 - start docker
-     sudo systemctl start docker
+```   
+sudo systemctl start docker
+```
 - check for the aws version
-    aws --version
+```    
+aws --version
+```
 - check for jenkins status to ensure it's running
 - check for docker status to ensure it's running
+
 ![alt text](images/20.67.png)
+
 ![alt text](images/20.68.png)
 
-- copy the public ip address of the jenkin server, access it on the web browser with porth 8080 for jenkins
-        http://<public ip>:8080
+copy the public ip address of the jenkin server, access it on the web browser with porth 8080 for jenkins
+```
+ http://<public ip>:8080
+```
 - when i accesed the jenkins via port 8080, it was displaying jenkins instance appeared to be offline
 ![alt text](images/20.64.png)
 - after trying to resolved it, i found out that Terraform was unable to perfect the installation on the server
