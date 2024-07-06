@@ -6,7 +6,7 @@ Also, when a developer develops an application and sends the application to anot
 
 **SOLUTION:**
 
-**Containerization** solves this problem. Unlike a `VM`, `Docker` allocates not the whole guest `OS` for your application, but only isolated minimal part of it – this isolated container has all that the application needs and at the same time is lighter, faster, and can be shipped as a Docker image to multiple physical or virtual environments, as long as this environment can run `Docker engine`. This approach also solves environment incompatibility issue.
+**Containerization** solves this problem. Unlike a `VM`, `Docker` allocates not the whole guest `OS` for your application, but only isolated minimal part of it – this isolated container has all that the application needs and at the same time is lighter, faster, and can be shipped as a Docker image to multiple physical or virtual environments, as long as this environment can run `Docker engine`. This approach also solves environment incompatibility issue
 
 In other words, if an application is shipped as a container it has its own environment that is isolated, and it will always work the same way on any server that has Docker engine.
 
